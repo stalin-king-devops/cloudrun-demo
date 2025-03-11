@@ -1,15 +1,16 @@
 steps:
-  # Step 1: Clone the latest repository (optional, ensures latest files)
-  - name: 'gcr.io/cloud-builders/git'
+  # Step 1: Verify files exist (Debugging step, can be removed later)
+  - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        git pull || echo "Skipping git pull"
+        echo "Checking workspace files..."
+        ls -R /workspace
 
-  # Step 2: Build the Docker image
+  # Step 2: Build the Docker image (Set correct path)
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/amazingapp:$COMMIT_SHA', '-f', 'blue/Dockerfile', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/amazingapp:$COMMIT_SHA', '-f', 'blue/Dockerfile', 'blue']
 
   # Step 3: Push the built image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
